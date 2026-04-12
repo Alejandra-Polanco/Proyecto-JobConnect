@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect | Encuentra tu próximo reto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy:    #050d1a;
+            --navy2:   #0a1628;
+            --navy3:   #0f2040;
+            --indigo:  #4f6ef7;
+            --indigo2: #3a58e8;
+            --cyan:    #06d6c7;
+            --cyan2:   #04b8aa;
+            --white:   #ffffff;
+            --gray-1:  #f0f4ff;
+            --gray-2:  #c8d4f0;
+            --gray-3:  #7a8fbc;
+            --gray-4:  #3a4f78;
+            --card-bg: rgba(255,255,255,0.04);
+            --card-border: rgba(255,255,255,0.08);
+            --radius-sm: 10px;
+            --radius:    16px;
+            --radius-lg: 24px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--navy);
+            color: var(--gray-1);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1,h2,h3,h4,h5,h6 { font-family: 'Syne', sans-serif; }
+
+        
+        body::before {
+            content: '';
+            position: fixed; top: -200px; left: -200px;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(79,110,247,.18) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed; bottom: -200px; right: -100px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(6,214,199,.12) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        
+        .navbar {
+            background: rgba(5,13,26,.8) !important;
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--card-border);
+            height: 68px;
+            position: fixed; top:0; left:0; right:0; z-index:1000;
+        }
+        .navbar-brand {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800; font-size: 22px;
+            color: var(--white) !important;
+            letter-spacing: -.5px;
+        }
+        .navbar-brand span {
+            background: linear-gradient(90deg, var(--indigo), var(--cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-link {
+            font-size: 14px; font-weight: 400;
+            color: var(--gray-3) !important;
+            border-radius: var(--radius-sm);
+            padding: 6px 14px !important;
+            transition: all .2s;
+        }
+        .nav-link:hover { color: var(--white) !important; background: var(--card-bg); }
+
+        .btn-nav-out {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--gray-2);
+            padding: 7px 18px; border-radius: var(--radius-sm);
+            font-size: 14px; font-family: 'DM Sans',sans-serif;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-nav-out:hover { border-color: var(--indigo); color: var(--white); }
+
+        .btn-nav-pri {
+            background: var(--indigo); border: none;
+            color: white; padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 500;
+            font-family: 'DM Sans',sans-serif;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn-nav-pri:hover { background: var(--indigo2); transform: translateY(-1px); }
+
+        /* HERO */
+        #vista-inicio { position: relative; z-index: 1; }
+        .hero-section {
+            min-height: 100vh; display: flex; align-items: center;
+            padding: 100px 0 60px;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(79,110,247,.12);
+            border: 1px solid rgba(79,110,247,.25);
+            border-radius: 100px; padding: 6px 16px;
+            font-size: 13px; color: #8fa8ff;
+            margin-bottom: 28px;
+            animation: fadeUp .5s ease both;
+        }
+        .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--cyan);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+        .hero-title {
+            font-size: clamp(42px, 6vw, 76px);
+            font-weight: 800; letter-spacing: -3px;
+            line-height: 1.0; color: var(--white);
+            margin-bottom: 24px;
+            animation: fadeUp .6s .1s ease both;
+        }
+        .hero-title .grad {
+            background: linear-gradient(135deg, var(--indigo) 0%, var(--cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-sub {
+            font-size: 17px; font-weight: 300;
+            color: var(--gray-3); line-height: 1.7;
+            max-width: 460px; margin-bottom: 40px;
+            animation: fadeUp .6s .2s ease both;
+        }
+
+        /* SEARCH */
+        .search-wrap {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: var(--radius-lg);
+            padding: 6px 6px 6px 20px;
+            display: flex; align-items: center; gap: 10px;
+            max-width: 560px; margin-bottom: 24px;
+            transition: border-color .2s, box-shadow .2s;
+            animation: fadeUp .6s .3s ease both;
+        }
+        .search-wrap:focus-within {
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(79,110,247,.15);
+        }
+        .search-wrap input {
+            background: transparent; border: none; outline: none;
+            color: var(--white); font-size: 15px;
+            font-family: 'DM Sans',sans-serif; flex: 1; min-width: 0;
+        }
+        .search-wrap input::placeholder { color: var(--gray-4); }
+        .btn-search {
+            background: linear-gradient(135deg, var(--indigo), var(--indigo2));
+            color: white; border: none;
+            padding: 12px 28px; border-radius: var(--radius-sm);
+            font-weight: 500; font-family: 'DM Sans',sans-serif;
+            font-size: 14px; cursor: pointer; white-space: nowrap;
+            transition: all .2s; flex-shrink: 0;
+        }
+        .btn-search:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(79,110,247,.4); }
+
+        .tags-row {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 52px;
+            animation: fadeUp .6s .35s ease both;
+        }
+        .tag-label { font-size: 12px; color: var(--gray-3); align-self: center; }
+        .tag-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--gray-3);
+            padding: 5px 14px; border-radius: 100px;
+            font-size: 12px; cursor: pointer; transition: all .2s;
+        }
+        .tag-chip:hover { border-color: var(--indigo); color: var(--white); }
+
+        /* STATS */
+        .stats-row {
+            display: flex; gap: 32px;
+            animation: fadeUp .6s .4s ease both;
+        }
+        .stat-num {
+            font-family: 'Syne',sans-serif;
+            font-size: 28px; font-weight: 700;
+            color: var(--white); line-height: 1;
+        }
+        .stat-num span { color: var(--cyan); }
+        .stat-lbl { font-size: 12px; color: var(--gray-3); margin-top: 4px; }
+        .stat-div { width: 1px; background: var(--card-border); align-self: stretch; }
+
+        /* HERO VISUAL */
+        .hero-visual { animation: fadeUp .8s .2s ease both; position: relative; padding: 24px; }
+        .hero-card-main {
+            background: var(--navy2);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 28px; position: relative; overflow: hidden;
+        }
+        .hero-card-main::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--indigo), var(--cyan));
+        }
+        .job-row {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .job-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .co-logo {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .job-info { flex: 1; min-width: 0; }
+        .job-ttl { font-size: 14px; font-weight: 500; color: var(--white); margin-bottom: 2px; font-family: 'Syne',sans-serif; }
+        .job-sub { font-size: 12px; color: var(--gray-3); }
+        .job-sal { font-size: 13px; color: var(--cyan); font-weight: 500; white-space: nowrap; }
+
+        .float-badge {
+            position: absolute;
+            background: var(--navy2);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius); padding: 12px 16px;
+            font-size: 11px; white-space: nowrap;
+        }
+        .float-badge.tr { top: -10px; right: 10px; animation: floatAnim 3s ease-in-out infinite; }
+        .float-badge.bl { bottom: -10px; left: 10px; animation: floatAnim 3s 1.5s ease-in-out infinite; }
+        @keyframes floatAnim { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+        /* VISTAS INTERNAS */
+        .vista-page { position: relative; z-index: 1; padding-top: 92px; min-height: 100vh; }
+        .page-header { margin-bottom: 36px; }
+        .page-header h1 { font-size: 34px; font-weight: 700; color: var(--white); letter-spacing: -1px; margin-bottom: 6px; }
+        .page-header p { color: var(--gray-3); font-size: 15px; margin: 0; }
+
+        /* CARDS */
+        .jc-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius); padding: 24px;
+            transition: all .25s;
+        }
+        .jc-card:hover { border-color: rgba(79,110,247,.4); background: rgba(79,110,247,.06); transform: translateY(-2px); }
+
+        .metric-card-dk {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius); padding: 28px 24px; text-align: center;
+        }
+        .metric-num-big {
+            font-family: 'Syne',sans-serif; font-size: 36px; font-weight: 700;
+            background: linear-gradient(135deg, var(--indigo), var(--cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        .metric-lbl { font-size: 13px; color: var(--gray-3); }
+
+        /* VACANTE CARD */
+        .vacante-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius); padding: 24px;
+            transition: all .25s;
+        }
+        .vacante-card:hover { border-color: rgba(79,110,247,.45); background: rgba(79,110,247,.05); transform: translateY(-2px); }
+
+        /* BADGE MODALIDAD */
+        .badge-mod { display: inline-block; font-size: 11px; padding: 4px 12px; border-radius: 100px; font-weight: 500; }
+        .badge-mod.Remoto    { background: rgba(6,214,199,.12); color: var(--cyan); border: 1px solid rgba(6,214,199,.25); }
+        .badge-mod.Presencial { background: rgba(79,110,247,.12); color: #8fa8ff; border: 1px solid rgba(79,110,247,.25); }
+        .badge-mod.Hibrido   { background: rgba(251,191,36,.1); color: #fbbf24; border: 1px solid rgba(251,191,36,.2); }
+
+        /* BOTONES */
+        .btn-primary-job {
+            background: linear-gradient(135deg, var(--indigo), var(--indigo2));
+            color: white; border: none;
+            padding: 11px 26px; border-radius: var(--radius-sm);
+            font-weight: 500; font-family: 'DM Sans',sans-serif;
+            font-size: 14px; cursor: pointer; transition: all .2s;
+        }
+        .btn-primary-job:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,110,247,.35); }
+        .btn-ghost {
+            background: transparent; border: 1px solid var(--card-border);
+            color: var(--gray-2); padding: 9px 20px;
+            border-radius: var(--radius-sm); font-size: 14px;
+            font-family: 'DM Sans',sans-serif; cursor: pointer; transition: all .2s;
+        }
+        .btn-ghost:hover { border-color: var(--gray-3); color: var(--white); }
+
+        /* MODALES */
+        .modal-content {
+            background: var(--navy2) !important;
+            border: 1px solid var(--card-border) !important;
+            border-radius: var(--radius-lg) !important;
+            color: var(--gray-1);
+        }
+        .modal-header { border-bottom: 1px solid var(--card-border) !important; padding: 24px 28px 16px !important; }
+        .modal-title { font-family: 'Syne',sans-serif !important; color: var(--white) !important; font-size: 20px !important; }
+        .modal-body { padding: 20px 28px !important; }
+        .modal-footer { border-top: 1px solid var(--card-border) !important; padding: 16px 28px 24px !important; }
+        .btn-close { filter: invert(1) opacity(.5); }
+        .btn-close:hover { filter: invert(1) opacity(1); }
+
+        .form-label { color: var(--gray-2); font-size: 13px; margin-bottom: 6px; }
+        .form-control, .form-select {
+            background: rgba(255,255,255,.05) !important;
+            border: 1px solid var(--card-border) !important;
+            color: var(--white) !important;
+            border-radius: var(--radius-sm) !important;
+            font-family: 'DM Sans',sans-serif; font-size: 14px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--indigo) !important;
+            box-shadow: 0 0 0 3px rgba(79,110,247,.15) !important;
+            background: rgba(79,110,247,.05) !important;
+        }
+        .form-control::placeholder { color: var(--gray-4) !important; }
+        .form-select option { background: var(--navy2); color: var(--white); }
+        .form-text { color: var(--gray-4) !important; font-size: 12px; }
+        .alert-danger { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); color: #fca5a5; border-radius: var(--radius-sm); }
+
+        /* PERFIL */
+        .avatar-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--indigo), var(--cyan));
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; font-family: 'Syne',sans-serif; font-weight: 700;
+            margin: 0 auto 16px;
+        }
+        .stat-pill {
+            background: rgba(79,110,247,.15); color: #8fa8ff;
+            border: 1px solid rgba(79,110,247,.25);
+            padding: 4px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 500;
+        }
+
+        /* STARS */
+        .star-rating { display: flex; gap: 6px; margin-bottom: 8px; }
+        .star { font-size: 22px; cursor: pointer; transition: transform .15s; color: var(--gray-4); }
+        .star:hover, .star.active { transform: scale(1.2); color: #fbbf24; }
+
+        /* RECURSOS */
+        .recurso-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius); padding: 28px;
+            transition: all .25s; position: relative; overflow: hidden;
+        }
+        .recurso-card::after {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--indigo), var(--cyan));
+            opacity: 0; transition: opacity .25s;
+        }
+        .recurso-card:hover::after { opacity: 1; }
+        .recurso-card:hover { border-color: rgba(79,110,247,.35); transform: translateY(-3px); }
+        .recurso-icon { font-size: 28px; margin-bottom: 14px; }
+        .recurso-title { font-family: 'Syne',sans-serif; font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+        .recurso-desc { font-size: 13px; color: var(--gray-3); line-height: 1.65; }
+
+        /* CHARTS */
+        .chart-wrap { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 24px; }
+        .chart-title { font-family: 'Syne',sans-serif; font-size: 15px; color: var(--white); margin-bottom: 20px; }
+
+        /* TOAST */
+        .toast-container { position: fixed; bottom: 28px; right: 28px; z-index: 9999; }
+        .toast-msg {
+            background: var(--navy2); border: 1px solid var(--card-border);
+            color: var(--white); padding: 14px 20px;
+            border-radius: var(--radius); font-size: 14px; margin-top: 10px;
+            animation: slideIn .3s ease;
+            display: flex; align-items: center; gap: 10px;
+            min-width: 260px; box-shadow: 0 20px 40px rgba(0,0,0,.4);
+        }
+        .toast-msg::before { font-size: 15px; flex-shrink: 0; }
+        .toast-msg.success { border-left: 3px solid var(--cyan); }
+        .toast-msg.success::before { content: '✓'; color: var(--cyan); }
+        .toast-msg.error { border-left: 3px solid #ef4444; }
+        .toast-msg.error::before { content: '✕'; color: #ef4444; }
+        .toast-msg.info::before { content: 'i'; color: var(--indigo); }
+        @keyframes slideIn { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+
+        /* EMPTY */
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--gray-4); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: .6; }
+        .empty-state p { font-size: 15px; }
+
+        /* ANIMACIONES */
+        .animate-up { animation: fadeUp .5s ease both; opacity: 0; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--navy); }
+        ::-webkit-scrollbar-thumb { background: var(--gray-4); border-radius: 3px; }
+
+        @media(max-width:768px) {
+            .hero-title { letter-spacing: -2px; }
+            .stats-row { gap: 20px; flex-wrap: wrap; }
+            .float-badge { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="irInicio(); return false;">Job<span>Connect</span></a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" style="filter:invert(1);">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navMenu">
+                <ul class="navbar-nav gap-1">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="irInicio();return false;">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="abrirPublicar();return false;">Publicar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarRecursos();return false;">Recursos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="mostrarValoraciones();return false;">Valoraciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="nav-admin" style="display:none;" onclick="mostrarAdmin();return false;">Admin</a></li>
+                </ul>
+            </div>
+            <div class="d-flex gap-2 align-items-center" id="auth-buttons">
+                <button class="btn-nav-out" onclick="abrirModal('modalLogin')">Iniciar sesión</button>
+                <button class="btn-nav-pri" onclick="abrirModal('modalRegistro')">Registrarse</button>
+            </div>
+            <div class="d-flex gap-2 align-items-center" id="user-menu" style="display:none !important;">
+                <span style="font-size:13px;color:var(--gray-3);">Hola, <strong style="color:var(--white)" id="user-name-nav"></strong></span>
+                <button class="btn-nav-out" onclick="mostrarPerfil()">Mi perfil</button>
+                <button class="btn-nav-out" style="border-color:rgba(239,68,68,.3);color:#fca5a5;" onclick="cerrarSesion()">Salir</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- INICIO -->
+    <div id="vista-inicio">
+        <section class="hero-section container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="hero-eyebrow">
+                        <span class="dot"></span>
+                        Más de 1,200 empleos activos hoy
+                    </div>
+                    <h1 class="hero-title">
+                        Tu próximo<br>
+                        <span class="grad">gran desafío</span><br>
+                        te espera
+                    </h1>
+                    <p class="hero-sub">
+                        Conectamos el mejor talento con las mejores empresas. Busca, postula y avanza desde un solo lugar.
+                    </p>
+
+                    <div class="search-wrap">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="var(--gray-3)" stroke-width="2" style="flex-shrink:0;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+                        <input type="text" id="input-busqueda" placeholder="Cargo, empresa o habilidad..." onkeydown="if(event.key==='Enter') buscar()">
+                        <button class="btn-search" onclick="buscar()">Buscar</button>
+                    </div>
+
+                    <div class="tags-row">
+                        <span class="tag-label">Populares:</span>
+                        <span class="tag-chip" onclick="buscarTag('Desarrollador')">Desarrollador</span>
+                        <span class="tag-chip" onclick="buscarTag('Diseñador')">Diseño UX</span>
+                        <span class="tag-chip" onclick="buscarTag('Marketing')">Marketing</span>
+                        <span class="tag-chip" onclick="buscarTag('Remoto')">Remoto</span>
+                        <span class="tag-chip" onclick="buscarTag('Data')">Data</span>
+                    </div>
+
+                    <div class="stats-row">
+                        <div>
+                            <div class="stat-num" id="stat-usuarios">15<span>K+</span></div>
+                            <div class="stat-lbl">Profesionales</div>
+                        </div>
+                        <div class="stat-div"></div>
+                        <div>
+                            <div class="stat-num" id="stat-empleos">1.2<span>K</span></div>
+                            <div class="stat-lbl">Vacantes activas</div>
+                        </div>
+                        <div class="stat-div"></div>
+                        <div>
+                            <div class="stat-num" id="stat-postulaciones">3.5<span>K</span></div>
+                            <div class="stat-lbl">Postulaciones</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="hero-visual">
+                        <div class="float-badge tr">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-size:18px;">🎯</span>
+                                <div>
+                                    <div style="font-size:11px;color:var(--white);font-weight:500;">Match perfecto</div>
+                                    <div style="font-size:10px;color:var(--gray-3);">98% compatibilidad</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hero-card-main">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                                <div>
+                                    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;color:var(--white);">Vacantes destacadas</div>
+                                    <div style="font-size:12px;color:var(--gray-3);">Actualizado hace 2 min</div>
+                                </div>
+                                <div style="background:rgba(6,214,199,.1);border:1px solid rgba(6,214,199,.2);border-radius:100px;padding:4px 12px;font-size:11px;color:var(--cyan);">● En vivo</div>
+                            </div>
+
+                            <div class="job-row">
+                                <div class="co-logo" style="background:rgba(79,110,247,.15);">💻</div>
+                                <div class="job-info">
+                                    <div class="job-ttl">Full Stack Developer</div>
+                                    <div class="job-sub">TechCorp · San Salvador</div>
+                                </div>
+                                <div class="job-sal">$2,500/mes</div>
+                            </div>
+                            <div class="job-row">
+                                <div class="co-logo" style="background:rgba(6,214,199,.1);">🎨</div>
+                                <div class="job-info">
+                                    <div class="job-ttl">UX Designer Senior</div>
+                                    <div class="job-sub">Creativa Digital · Remoto</div>
+                                </div>
+                                <div class="job-sal">$1,800/mes</div>
+                            </div>
+                            <div class="job-row">
+                                <div class="co-logo" style="background:rgba(251,191,36,.1);">📊</div>
+                                <div class="job-info">
+                                    <div class="job-ttl">Data Analyst</div>
+                                    <div class="job-sub">Fintech SV · Híbrido</div>
+                                </div>
+                                <div class="job-sal">$2,100/mes</div>
+                            </div>
+                            <div class="job-row">
+                                <div class="co-logo" style="background:rgba(239,68,68,.1);">🚀</div>
+                                <div class="job-info">
+                                    <div class="job-ttl">Product Manager</div>
+                                    <div class="job-sub">StartupHub · San Salvador</div>
+                                </div>
+                                <div class="job-sal">$3,000/mes</div>
+                            </div>
+                        </div>
+
+                        <div class="float-badge bl">
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span style="color:var(--cyan);font-size:14px;">✓</span>
+                                <span style="font-size:11px;color:var(--gray-2);">Postulación enviada con éxito</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div id="vista-resultados" class="vista-page container d-none">
+        <div class="d-flex justify-content-between align-items-center page-header">
+            <div>
+                <h1 id="txt-resultados">Resultados</h1>
+                <p>Encuentra el trabajo ideal para ti</p>
+            </div>
+            <button class="btn-ghost" onclick="irInicio()">← Volver</button>
+        </div>
+        <div id="contenedor-vacantes" class="row g-3"></div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="vista-recursos" class="vista-page container d-none">
+        <div class="page-header">
+            <h1>Recursos y Comunidad</h1>
+            <p>Herramientas para impulsar tu carrera profesional</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6"><div class="recurso-card"><div class="recurso-icon">📄</div><div class="recurso-title">5 Consejos para mejorar tu CV</div><div class="recurso-desc">Aprende cómo destacar tu perfil técnico y llamar la atención de los reclutadores desde el primer vistazo.</div></div></div>
+            <div class="col-md-6"><div class="recurso-card"><div class="recurso-icon">🎙️</div><div class="recurso-title">Prepárate para entrevistas técnicas</div><div class="recurso-desc">Guía paso a paso para estructurar tus respuestas, demostrar expertise y comunicar tu valor con claridad.</div></div></div>
+            <div class="col-md-6"><div class="recurso-card"><div class="recurso-icon">🌐</div><div class="recurso-title">Networking efectivo en LinkedIn</div><div class="recurso-desc">Estrategias probadas para construir conexiones genuinas que abran puertas profesionales en el sector tech.</div></div></div>
+            <div class="col-md-6"><div class="recurso-card"><div class="recurso-icon">💰</div><div class="recurso-title">Salarios en el sector tech 2025</div><div class="recurso-desc">Datos actualizados sobre rangos salariales para distintos perfiles en El Salvador y Latinoamérica.</div></div></div>
+        </div>
+    </div>
+
+    <!-- VALORACIONES -->
+    <div id="vista-valoraciones" class="vista-page container d-none">
+        <div class="d-flex justify-content-between align-items-center page-header">
+            <div>
+                <h1>Valoraciones</h1>
+                <p>Opiniones reales de profesionales sobre empresas</p>
+            </div>
+            <button class="btn-primary-job" onclick="abrirValoracion()">+ Calificar empresa</button>
+        </div>
+        <div id="lista-valoraciones" class="row g-3">
+            <div class="col-12 empty-state"><div class="icon">⭐</div><p>Cargando valoraciones...</p></div>
+        </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="vista-admin" class="vista-page container d-none">
+        <div class="page-header">
+            <h1>Panel Administrativo</h1>
+            <p>Estadísticas en tiempo real de la plataforma</p>
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4"><div class="metric-card-dk"><div class="metric-num-big" id="admin-usuarios">—</div><div class="metric-lbl">Usuarios registrados</div></div></div>
+            <div class="col-md-4"><div class="metric-card-dk"><div class="metric-num-big" id="admin-empleos">—</div><div class="metric-lbl">Vacantes activas</div></div></div>
+            <div class="col-md-4"><div class="metric-card-dk"><div class="metric-num-big" id="admin-postulaciones">—</div><div class="metric-lbl">Postulaciones totales</div></div></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6"><div class="chart-wrap"><div class="chart-title">Nuevos registros por mes</div><canvas id="chartBarras" height="220"></canvas></div></div>
+            <div class="col-md-6"><div class="chart-wrap"><div class="chart-title">Vacantes por categoría</div><canvas id="chartPastel" height="220"></canvas></div></div>
+        </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div id="vista-perfil" class="vista-page container d-none">
+        <div class="page-header"><h1>Mi Perfil</h1></div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="jc-card text-center" style="cursor:default;">
+                    <div class="avatar-circle" id="perfil-avatar">U</div>
+                    <h4 style="color:var(--white);margin-bottom:4px;" id="perfil-nombre">Usuario</h4>
+                    <p style="color:var(--gray-3);font-size:14px;margin-bottom:12px;" id="perfil-email">—</p>
+                    <span class="stat-pill" id="perfil-rol">Candidato</span>
+                    <hr style="border-color:var(--card-border);margin:20px 0;">
+                    <div id="mis-postulaciones-lista" class="text-start"></div>
+                    <button class="btn-ghost w-100 mt-3" style="color:#fca5a5;border-color:rgba(239,68,68,.25);" onclick="cerrarSesion()">Cerrar sesión</button>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="chart-wrap">
+                    <div class="chart-title">Actividad de la cuenta</div>
+                    <canvas id="chartPerfil" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- LOGIN -->
+    <div class="modal fade" id="modalLogin" tabindex="-1" aria-labelledby="loginLabel" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginLabel">Iniciar sesión</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="login-error" class="alert alert-danger d-none mb-3"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" id="log-email" class="form-control" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="log-pass" class="form-control" placeholder="••••••••" onkeydown="if(event.key==='Enter') auth('login')">
+                    </div>
+                    <button class="btn-primary-job w-100" id="btn-login" onclick="auth('login')">Entrar</button>
+                    <p class="text-center mt-3 mb-0" style="font-size:13px;color:var(--gray-3);">¿No tienes cuenta? <a href="#" style="color:var(--indigo);" onclick="cambiarModal('modalLogin','modalRegistro')">Regístrate gratis</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="modal fade" id="modalRegistro" tabindex="-1" aria-labelledby="regLabel" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="regLabel">Crear cuenta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="reg-error" class="alert alert-danger d-none mb-3"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" id="reg-nom" class="form-control" placeholder="Tu nombre">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" id="reg-email" class="form-control" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="reg-pass" class="form-control" placeholder="Mínimo 6 caracteres">
+                        <div class="form-text">Mínimo 6 caracteres</div>
+                    </div>
+                    <button class="btn-primary-job w-100" id="btn-registro" onclick="auth('registro')">Crear cuenta gratis</button>
+                    <p class="text-center mt-3 mb-0" style="font-size:13px;color:var(--gray-3);">¿Ya tienes cuenta? <a href="#" style="color:var(--indigo);" onclick="cambiarModal('modalRegistro','modalLogin')">Inicia sesión</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUBLICAR -->
+    <div class="modal fade" id="modalPublicar" tabindex="-1" aria-labelledby="pubLabel" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pubLabel">Publicar vacante</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="pub-error" class="alert alert-danger d-none mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Título del puesto *</label><input type="text" id="pub-titulo" class="form-control" placeholder="Ej. Desarrollador React Senior"></div>
+                        <div class="col-md-6"><label class="form-label">Ubicación *</label><input type="text" id="pub-ubicacion" class="form-control" placeholder="Ej. San Salvador"></div>
+                        <div class="col-md-6"><label class="form-label">Salario mensual ($) *</label><input type="number" id="pub-salario" class="form-control" placeholder="Ej. 1500" min="0"></div>
+                        <div class="col-md-6"><label class="form-label">Modalidad</label><select id="pub-modalidad" class="form-select"><option value="Presencial">Presencial</option><option value="Remoto">Remoto</option><option value="Hibrido">Híbrido</option></select></div>
+                        <div class="col-12"><label class="form-label">Descripción del puesto</label><textarea id="pub-descripcion" class="form-control" rows="4" placeholder="Responsabilidades, requisitos y beneficios..."></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn-primary-job" id="btn-publicar" onclick="publicarVacante()">Publicar ahora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETALLE -->
+    <div class="modal fade" id="modalDetalle" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h4 class="modal-title" id="det-titulo">—</h4>
+                        <p style="color:var(--gray-3);margin-bottom:0;font-size:14px;" id="det-sub">—</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4" id="det-badges"></div>
+                    <p style="font-size:13px;color:var(--gray-2);margin-bottom:8px;font-weight:500;">Descripción del puesto</p>
+                    <p id="det-descripcion" style="color:var(--gray-3);font-size:14px;line-height:1.7;">—</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-ghost" data-bs-dismiss="modal">Cerrar</button>
+                    <button class="btn-primary-job" id="btn-aplicar" onclick="realizarPostulacion()">Aplicar ahora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VALORACION -->
+    <div class="modal fade" id="modalValoracion" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Calificar empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de la empresa *</label>
+                        <input type="text" id="val-empresa" class="form-control" placeholder="Ej. Tech Solutions S.A.">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Puntuación</label>
+                        <div class="star-rating" id="star-rating">
+                            <span class="star" data-val="1" onclick="setPuntos(1)">☆</span>
+                            <span class="star" data-val="2" onclick="setPuntos(2)">☆</span>
+                            <span class="star" data-val="3" onclick="setPuntos(3)">☆</span>
+                            <span class="star" data-val="4" onclick="setPuntos(4)">☆</span>
+                            <span class="star" data-val="5" onclick="setPuntos(5)">☆</span>
+                        </div>
+                        <input type="hidden" id="val-puntos" value="0">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Comentario</label>
+                        <textarea id="val-coment" class="form-control" rows="3" placeholder="Comparte tu experiencia..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn-primary-job" onclick="guardarValoracion()">Enviar valoración</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        Chart.defaults.color = '#7a8fbc';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+
+     
+        function buscarTag(term) {
+            document.getElementById('input-busqueda').value = term;
+            buscar();
+        }
+    </script>
+    <script src="script.js" defer></script>
+</body>
+</html>
